@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Diaspora Cluster Generator</title>
+
+        <link href="./diaspora.css" rel="stylesheet"/>
+
+		<script type="text/javascript" src="./jquery-1.9.0.js"></script>
+		<script type="text/javascript" src="./jcanvas.js"></script>
+		<script type="text/javascript" src="./seedrandom.js"></script>
+		<script type="text/javascript" src="./dice.js"></script>
+		<script type="text/javascript" src="./cluster.js"></script>
+	</head>
+	<body>
+		<h1>Diaspora Cluster Generator</h1>
+		
+		<br />
+		<button id="newButton" type="button">Generate</button>
+		<select id="systemCount">
+			<option>4</option>
+			<option>5</option>
+			<option>6</option>
+			<option>7</option>
+			<option>8</option>
+			<option>9</option>
+			<option>10</option>
+			<option>11</option>
+			<option>12</option>
+		</select>
+		<canvas width="500" height="250"></canvas>
+		<hr />
+		<img id="saveableCluster" />
+		<br />
+
+        <div class="hidden" id="cluster"></div>
+		<br />
+        <div class="hidden" id="clusterJSON"></div>
+		
+        <script type="text/javascript">		
+			// check for seed in url
+			var now = new Date();
+			var seedValue = "" + now.getTime();	
+			var systemCount = 6;
+
+			if(window.location.hash) {
+				var hash = window.location.hash.substring(1); //Puts hash in variable, and removes the # character
+				var hashFields = ExtractHashFields(hash);
+				seedValue = hashFields.seed;
+				systemCount = hashFields.count;
+			} else {
+				window.location.hash = BuildHashFields({seed:seedValue, count:systemCount});
+			}
+
+			$(document).ready(function () {
+
+                $("#newButton").click(function () {
+					now = new Date();
+					seedValue = "" + now.getTime();		
+					window.location.hash = BuildHashFields({seed:seedValue, count:systemCount});
+					
+					GenerateCluster();
+                });
+
+				$("#systemCount").val(systemCount);
+				
+				$("#systemCount").change(function(){
+					now = new Date();
+					seedValue = "" + now.getTime();	
+					systemCount = $("#systemCount").val();
+					window.location.hash = BuildHashFields({seed:seedValue, count:systemCount});
+					GenerateCluster();
+				});
+				GenerateCluster();
+            });
+			
+			function GenerateCluster() {
+				var die = new FudgeDie(seedValue);
+				var cluster = new Cluster(die, systemCount);
+				var clusterText = '';
+				cluster.systems.forEach(function (element, index, array) {
+				clusterText = clusterText
+					+ element.planet.Formatted()
+					+ ' (' + element.links.toString() + ')'
+					+ "</br>";
+				});
+				$("#cluster").html(clusterText);
+				cluster.Draw();
+				var jsonCluster = JSON.stringify(cluster,ClusterStringifyReplacer);
+				$("#clusterJSON").html(jsonCluster);
+				
+				var img = $("canvas").getCanvasImage("png");
+				$("#saveableCluster").attr("src", img);
+			}
+        </script>
+		
+	</body>
+</html>
