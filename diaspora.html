@@ -5,8 +5,11 @@
 		
 		<title>Diaspora Cluster Generator</title>
 
-                <link href="./diaspora.css" rel="stylesheet"/>
-                <script type="text/javascript" src="./jquery-1.9.0.js"></script>
+		<!-- Trying out Google Web Fonts -->
+		<link href='http://fonts.googleapis.com/css?family=Unica+One' rel='stylesheet' type='text/css'>
+        <link href="./diaspora.css" rel="stylesheet"/>
+
+		<script type="text/javascript" src="./jquery-1.9.0.js"></script>
 		<script type="text/javascript" src="./jcanvas.js"></script>
 		<script type="text/javascript" src="./seedrandom.js"></script>
 		<script type="text/javascript" src="./dice.js"></script>
@@ -28,19 +31,18 @@
 			<option>11</option>
 			<option>12</option>
 		</select>
-		<canvas width="500" height="250"></canvas>
+		<canvas class="hidden" id="clusterCanvas" width="500" height="250"></canvas>
 		<hr />
 		<img id="saveableCluster" />
 		<br />
 
-        <div class="hidden" id="cluster"></div>
-		<br />
         <div class="hidden" id="clusterJSON"></div>
 		
         <script type="text/javascript">		
-			// check for seed in url
+			// get default seed if hash not set on page
 			var now = new Date();
 			var seedValue = "" + now.getTime();	
+			// get default system count if hash not set on page
 			var systemCount = 6;
 
 			if(window.location.hash) {
@@ -76,23 +78,16 @@
 			
 			function GenerateCluster() {
 				var die = new FudgeDie(seedValue);
-				var cluster = new Cluster(die, systemCount);
-				var clusterText = '';
-				cluster.systems.forEach(function (element, index, array) {
-				clusterText = clusterText
-					+ element.planet.Formatted()
-					+ ' (' + element.links.toString() + ')'
-					+ "</br>";
-				});
-				$("#cluster").html(clusterText);
+				var cluster = new Cluster(die, systemCount, "#clusterCanvas");
 				cluster.Draw();
-				var jsonCluster = JSON.stringify(cluster,ClusterStringifyReplacer);
+				//var jsonCluster = JSON.stringify(cluster,ClusterStringifyReplacer);
+				var jsonCluster = cluster.GetJSON();
 				$("#clusterJSON").html(jsonCluster);
 				
 				var img = $("canvas").getCanvasImage("png");
 				$("#saveableCluster").attr("src", img);
 			}
         </script>
-	<p><a href="https://github.com/thecrazygm/DiasporaClusterGenerator">Get the Source Code Here</a></p>	
+		<p><a href="https://github.com/thecrazygm/DiasporaClusterGenerator">Get the Source Code Here</a></p>	
 	</body>
 </html>
