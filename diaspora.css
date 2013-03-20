@@ -1,17 +1,59 @@
 body {
     padding-left: 1em;
     padding-right: 1em;
-    font-family: Arial, sans-serif;
+    font-family: Aldrich, Arial, sans-serif;
     color: black;
 	background: white;
 }
 
 h1 {
-	font-family: Skia, 'Unica One', Arial, sans-serif;
+	font-family: Skia, Aldrich, Arial, sans-serif;
+}
+
+button {
+	font-family: Aldrich, Arial, sans-serif;
+	font-size: 24px;
+	padding: 10px;
+	
+	border-top-right-radius: 15px 15px;    
+	-moz-border-radius-topright: 15px 15px;
+}
+
+select {
+	font-family: Aldrich, Arial, sans-serif;
+	font-size: 24px;
+	padding: 10px;
+
+	border-top-right-radius: 15px 15px;    
+	-moz-border-radius-topright: 15px 15px;
+	
+}
+
+input {
+	font-family: Aldrich, Arial, sans-serif;
+	font-size: 24px;
+	padding: 10px;
+
+	border-top-right-radius: 15px 15px;    
+	-moz-border-radius-topright: 15px 15px;
+	
 }
 
 .hidden {
 	display: none;
+}
+
+#footer {
+	background:#color code none repeat scroll 0 0;
+	bottom:0;
+	display:block;
+	height:30 px;
+	left:0;
+	position:fixed;
+	text-align:right;
+	width:100%;
+	z-index:999;
+	padding-bottom: 2px;
 }
 
 #clusterJSON {

@@ -220,7 +220,7 @@ Cluster.prototype.Draw = function () {
     var SystemSpacing = 30;
     var width = (this.systems.length * (SystemRadius * 2)) + ((this.systems.length + 1) * SystemSpacing);
 	var longestLink = this.GetLongestLink();
-    var height = (SystemRadius * 2) + (longestLink * 60);
+    var height = (SystemRadius * 2) + (longestLink * 60) + 20;
     var cluster = this;
 	var system;
 
