@@ -54,6 +54,7 @@ input {
 	width:100%;
 	z-index:999;
 	padding-bottom: 2px;
+	padding-right: 2px;
 }
 
 #clusterJSON {
