@@ -1,14 +1,21 @@
 body {
-    padding-left: 1em;
-    padding-right: 1em;
-    font-family: Aldrich, Arial, sans-serif;
-    color: black;
+    	padding-left: 1em;
+    	padding-right: 1em;
+    	font-family: Aldrich, Arial, sans-serif;
+    	color: black;
 	background: white;
 }
 
 h1 {
-	font-family: Skia, Aldrich, Arial, sans-serif;
+	font-family: Aldrich, Arial, sans-serif;
 }
+
+hr {
+	display: block; height: 2px;
+    	border: 0; border-top: 2px solid black;
+    	margin: 1em 0; padding: 0;
+}
+
 
 button {
 	font-family: Aldrich, Arial, sans-serif;
