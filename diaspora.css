@@ -43,7 +43,7 @@ select {
 
 	font-family: Aldrich, Arial, sans-serif;
 	font-size: 24px;
-	padding: 10px;
+	padding: 9px; /* not 10 so height matches that of button */
 
 	border-top-right-radius: 15px 15px;    
 	-moz-border-radius-topright: 15px 15px;

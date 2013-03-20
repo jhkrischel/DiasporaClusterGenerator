@@ -35,12 +35,15 @@ function StarSystem(die) {
 }
 
 // Cluster //--------------------------------------------------------------------------------
-function Cluster(die, count, canvasId) {
+function Cluster() {
+	this.systems = [];
+}
+
+Cluster.prototype.Generate = function(die, count) {
 	this.systems = [];
 	this.systems.length = count;
 	this.alternate = false;
 	this.die = die;
-	this.canvasId = canvasId;
 
     for (var index = 0; index < count; index++)
     {
@@ -48,7 +51,22 @@ function Cluster(die, count, canvasId) {
     }
     this.Link(die);
 	this.EnforceTechMinimum();
-}
+};
+
+// Get JSON of Cluster, filtered to just essential properties
+Cluster.prototype.GetJSON = function() {
+	return JSON.stringify(this,ClusterStringifyReplacer);
+};
+
+// Set JSON of Cluster, filtered to just essential properties
+Cluster.prototype.LoadFromJSON = function(text) {
+	//TODO: write loading from json code here. Will be used in editor page.	See: http://api.jquery.com/jQuery.extend/
+	var obj = JSON.parse(text);
+	this.systems = [];
+	this.alternate = false;
+
+	$.extend(this, obj);
+};
 
 // At least one system needs Technology 2+
 // If not, find the systems with the highest and lowest attribute totals and set their Technology to 2
@@ -172,7 +190,7 @@ Cluster.prototype.GetLongestLink = function() {
 };
 
 // draws straight lines or arcs to the next linked System
-Cluster.prototype.DrawLink = function(index1, index2) {
+Cluster.prototype.DrawLink = function(index1, index2, canvasId) {
 	var system1;
 	var system2;
 	var strokeStyle = "#000";
@@ -182,7 +200,7 @@ Cluster.prototype.DrawLink = function(index1, index2) {
 		// Straignt Lines
 		system1 = this.systems[index1];
 		system2 = this.systems[index2];
-		$(this.canvasId).drawLine({
+		$(canvasId).drawLine({
             strokeStyle: strokeStyle,
             strokeWidth: strokeWidth,
             x1: system1.x, y1: system1.y,
@@ -203,7 +221,7 @@ Cluster.prototype.DrawLink = function(index1, index2) {
 		}
 		this.alternate = !this.alternate;
 
-		$(this.canvasId).drawBezier({
+		$(canvasId).drawBezier({
             strokeStyle: strokeStyle,
             strokeWidth: strokeWidth,
             x1: system1.x, y1: system1.y,
@@ -215,7 +233,7 @@ Cluster.prototype.DrawLink = function(index1, index2) {
 };
 
 // Draws a Cluster
-Cluster.prototype.Draw = function () {
+Cluster.prototype.Draw = function (canvasId) {
     var SystemRadius = 50;
     var SystemSpacing = 30;
     var width = (this.systems.length * (SystemRadius * 2)) + ((this.systems.length + 1) * SystemSpacing);
@@ -224,8 +242,8 @@ Cluster.prototype.Draw = function () {
     var cluster = this;
 	var system;
 
-    $(cluster.canvasId).attr("width", width);
-    $(cluster.canvasId).attr("height", height);
+    $(canvasId).attr("width", width);
+    $(canvasId).attr("height", height);
 
     // elliptical arcs here
 
@@ -251,7 +269,7 @@ Cluster.prototype.Draw = function () {
 			var link = system.links[i];
 			if (link > index)
 			{
-				this.DrawLink(index,link);
+				this.DrawLink(index, link, canvasId);
 			}
 		}
 	},this);
@@ -264,7 +282,7 @@ Cluster.prototype.Draw = function () {
     this.systems.forEach(function (element, index, array) {
         system = element;
 
-        $(cluster.canvasId).drawArc({
+        $(canvasId).drawArc({
 			fillStyle: "white",
             strokeStyle: "#000",
             strokeWidth: 2,
@@ -273,7 +291,7 @@ Cluster.prototype.Draw = function () {
             radius: SystemRadius
         });
 
-        $(cluster.canvasId).drawText({
+        $(canvasId).drawText({
             fillStyle: cluster.ColorByValue(system.planet.technology),
             strokeWidth: fontStrokeWidth,
             x: x,
@@ -282,7 +300,7 @@ Cluster.prototype.Draw = function () {
             text: 'T' + system.planet.FormatNumber(system.planet.technology)
         });
 
-        $(cluster.canvasId).drawText({
+        $(canvasId).drawText({
             fillStyle: cluster.ColorByValue(system.planet.environment),
             strokeWidth: fontStrokeWidth,
             x: x,
@@ -291,7 +309,7 @@ Cluster.prototype.Draw = function () {
             text: 'E' + system.planet.FormatNumber(system.planet.environment)
         });
 
-        $(cluster.canvasId).drawText({
+        $(canvasId).drawText({
             fillStyle: cluster.ColorByValue(system.planet.resources),
             strokeWidth: fontStrokeWidth,
             x: x,
@@ -305,14 +323,14 @@ Cluster.prototype.Draw = function () {
 
 	// Draw seed value in upper right
 	fontName = "8pt Consolas, Courier, sans-serif";	
-	var textWidth = $(cluster.canvasId).measureText({
+	var textWidth = $(canvasId).measureText({
 		fillStyle: "black",
 		strokeWidth: 1,
 		font: fontName,
 		fromCenter: false,
 		text: cluster.die.seed
 	}).width;
-	$(cluster.canvasId).drawText({
+	$(canvasId).drawText({
 		fillStyle: "black",
 		strokeWidth: 1,
 		x: width-(textWidth+10),
@@ -323,17 +341,6 @@ Cluster.prototype.Draw = function () {
 	});
 
 };
-
-// Get JSON of Cluster, filtered to just essential properties
-Cluster.prototype.GetJSON = function() {
-	return JSON.stringify(this,ClusterStringifyReplacer);
-};
-
-// Set JSON of Cluster, filtered to just essential properties
-Cluster.prototype.LoadFromJSON = function() {
-	//TODO: write loading from json code here. Will be used in editor page.	See: http://api.jquery.com/jQuery.extend/
-};
-
 
 // Ignore these properties when strinifying a Cluster to JSON
 function ClusterStringifyReplacer(key,value) {

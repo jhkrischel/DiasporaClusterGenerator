@@ -80,10 +80,19 @@
 			
 			function GenerateCluster() {
 				var die = new FudgeDie(seedValue);
-				var cluster = new Cluster(die, systemCount, "#clusterCanvas");
-				cluster.Draw();
-				//var jsonCluster = JSON.stringify(cluster,ClusterStringifyReplacer);
-				var jsonCluster = cluster.GetJSON();
+				var cluster = new Cluster();
+				cluster.Generate(die, systemCount)
+				cluster.Draw("#clusterCanvas");
+
+				var cluster2 = new Cluster();
+				var clusterTxt = {"systems":[
+					{"planet":{"technology":1,"environment":2,"resources":3},"links":[1,2]},
+					{"planet":{"technology":-3,"environment":-2,"resources":-1},"links":[0,2]},
+					{"planet":{"technology":1,"environment":1,"resources":1},"links":[0,1]}]};
+				cluster2.LoadFromJSON(JSON.stringify(clusterTxt));
+				//cluster2.Draw("#clusterCanvas");
+				
+				var jsonCluster = cluster2.GetJSON();
 				$("#clusterJSON").html(jsonCluster);
 				
 				var img = $("canvas").getCanvasImage("png");
