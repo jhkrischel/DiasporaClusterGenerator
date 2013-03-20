@@ -1,8 +1,8 @@
 body {
-    	padding-left: 1em;
-    	padding-right: 1em;
-    	font-family: Aldrich, Arial, sans-serif;
-    	color: black;
+	padding-left: 1em;
+	padding-right: 1em;
+	font-family: Aldrich, Arial, sans-serif;
+	color: black;
 	background: white;
 }
 
@@ -12,28 +12,41 @@ h1 {
 
 hr {
 	display: block; height: 2px;
-    	border: 0; border-top: 2px solid black;
-    	margin: 1em 0; padding: 0;
+	border: 0; border-top: 2px solid black;
+	margin: 1em 0; padding: 0;
 }
 
 
 button {
+	border-style: solid;
+	border-color: black;
+	border-width: 1px;
+	
+	background: white;
+	color: black;
 	font-family: Aldrich, Arial, sans-serif;
 	font-size: 24px;
 	padding: 10px;
 	
 	border-top-right-radius: 15px 15px;    
-	-moz-border-radius-topright: 15px 15px;
+	-moz-border-radius-topright: 15px 15px;	
+}
+
+button:hover {
+	background: black;
+	color: white;
 }
 
 select {
+	border-style: solid;
+	border-color: black;
+
 	font-family: Aldrich, Arial, sans-serif;
 	font-size: 24px;
 	padding: 10px;
 
 	border-top-right-radius: 15px 15px;    
 	-moz-border-radius-topright: 15px 15px;
-	
 }
 
 input {
@@ -43,7 +56,6 @@ input {
 
 	border-top-right-radius: 15px 15px;    
 	-moz-border-radius-topright: 15px 15px;
-	
 }
 
 .hidden {
