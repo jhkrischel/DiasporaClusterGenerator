@@ -5,10 +5,7 @@
 		
 		<title>Diaspora Cluster Generator</title>
 
-		<!-- Trying out Google Web Fonts -->
-		<link href='http://fonts.googleapis.com/css?family=Unica+One' rel='stylesheet' type='text/css'>
 		<link href='http://fonts.googleapis.com/css?family=Aldrich' rel='stylesheet' type='text/css'>
-		
         <link href="./diaspora.css" rel="stylesheet"/>
 
 		<script type="text/javascript" src="./jquery-1.9.0.js"></script>
@@ -63,7 +60,7 @@
 					seedValue = "" + now.getTime();		
 					window.location.hash = BuildHashFields({seed:seedValue, count:systemCount});
 					
-					GenerateCluster();
+					//GenerateCluster();
                 });
 
 				$("#systemCount").val(systemCount);
@@ -73,9 +70,18 @@
 					seedValue = "" + now.getTime();	
 					systemCount = $("#systemCount").val();
 					window.location.hash = BuildHashFields({seed:seedValue, count:systemCount});
-					GenerateCluster();
+					//GenerateCluster();
 				});
 				GenerateCluster();
+				
+				window.onhashchange = function() {
+					var hash = window.location.hash.substring(1); //Puts hash in variable, and removes the # character
+					var hashFields = ExtractHashFields(hash);
+					seedValue = hashFields.seed;
+					systemCount = hashFields.count;
+				
+					GenerateCluster();
+				};				
             });
 			
 			function GenerateCluster() {
@@ -84,15 +90,7 @@
 				cluster.Generate(die, systemCount)
 				cluster.Draw("#clusterCanvas");
 
-				var cluster2 = new Cluster();
-				var clusterTxt = {"systems":[
-					{"planet":{"technology":1,"environment":2,"resources":3},"links":[1,2]},
-					{"planet":{"technology":-3,"environment":-2,"resources":-1},"links":[0,2]},
-					{"planet":{"technology":1,"environment":1,"resources":1},"links":[0,1]}]};
-				cluster2.LoadFromJSON(JSON.stringify(clusterTxt));
-				//cluster2.Draw("#clusterCanvas");
-				
-				var jsonCluster = cluster2.GetJSON();
+				var jsonCluster = cluster.GetJSON();
 				$("#clusterJSON").html(jsonCluster);
 				
 				var img = $("canvas").getCanvasImage("png");

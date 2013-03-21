@@ -4,9 +4,15 @@
 "use strict";
 // Planet //--------------------------------------------------------------------------------
 function Planet(die) {
-    this.technology = die.Roll4DF();
-    this.environment = die.Roll4DF();
-    this.resources = die.Roll4DF();
+	if (die != undefined) {
+		this.technology = die.Roll4DF();
+		this.environment = die.Roll4DF();
+		this.resources = die.Roll4DF();
+	} else {
+		this.technology = 0;
+		this.environment = 0;
+		this.resources = 0;
+	}
 }
 
 // The total of the attributes. 
@@ -43,7 +49,7 @@ Cluster.prototype.Generate = function(die, count) {
 	this.systems = [];
 	this.systems.length = count;
 	this.alternate = false;
-	this.die = die;
+	this.seed = die.seed;
 
     for (var index = 0; index < count; index++)
     {
@@ -58,14 +64,23 @@ Cluster.prototype.GetJSON = function() {
 	return JSON.stringify(this,ClusterStringifyReplacer);
 };
 
-// Set JSON of Cluster, filtered to just essential properties
+// Set JSON of Cluster
 Cluster.prototype.LoadFromJSON = function(text) {
-	//TODO: write loading from json code here. Will be used in editor page.	See: http://api.jquery.com/jQuery.extend/
 	var obj = JSON.parse(text);
 	this.systems = [];
 	this.alternate = false;
+	this.seed = '';
 
-	$.extend(this, obj);
+	this.systems.length = obj.systems.length;
+    var index;
+	for (index = 0; index < obj.systems.length; index++)
+    {
+		this.systems[index] = new StarSystem();
+		this.systems[index].planet.technology = obj.systems[index].planet.technology;
+		this.systems[index].planet.environment = obj.systems[index].planet.environment;
+		this.systems[index].planet.resources = obj.systems[index].planet.resources;
+		this.systems[index].links = obj.systems[index].links;
+    }
 };
 
 // At least one system needs Technology 2+
@@ -328,7 +343,7 @@ Cluster.prototype.Draw = function (canvasId) {
 		strokeWidth: 1,
 		font: fontName,
 		fromCenter: false,
-		text: cluster.die.seed
+		text: cluster.seed
 	}).width;
 	$(canvasId).drawText({
 		fillStyle: "black",
@@ -337,7 +352,7 @@ Cluster.prototype.Draw = function (canvasId) {
 		y: 5,
 		font: fontName,
 		fromCenter: false,
-		text: cluster.die.seed
+		text: cluster.seed
 	});
 
 };
