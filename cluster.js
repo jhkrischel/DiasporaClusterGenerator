@@ -47,11 +47,11 @@ function Cluster() {
 
 Cluster.prototype.Generate = function(die, count) {
 	this.systems = [];
-	this.systems.length = count;
+	this.systems.length = Math.min(count,12);
 	this.alternate = false;
 	this.seed = die.seed;
 
-    for (var index = 0; index < count; index++)
+    for (var index = 0; index < this.systems.length; index++)
     {
         this.systems[index] = new StarSystem(die);
     }
