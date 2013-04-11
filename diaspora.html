@@ -30,6 +30,7 @@
 			<option>11</option>
 			<option>12</option>
 		</select>
+		<button id="editButton" type="button">Edit</button>
 		<canvas class="hidden" id="clusterCanvas" width="500" height="250"></canvas>
 		<hr />
 		<img id="saveableCluster" />
@@ -59,8 +60,12 @@
 					now = new Date();
 					seedValue = "" + now.getTime();		
 					window.location.hash = BuildHashFields({seed:seedValue, count:systemCount});
-					
-					//GenerateCluster();
+                });
+
+                $("#editButton").click(function () {
+					// get json, open edit page with it as a param
+					var jsonCluster = encodeURIComponent($("#clusterJSON").html());
+					window.location.href = "cluster-edit.html?json="+jsonCluster;
                 });
 
 				$("#systemCount").val(systemCount);
@@ -70,7 +75,6 @@
 					seedValue = "" + now.getTime();	
 					systemCount = $("#systemCount").val();
 					window.location.hash = BuildHashFields({seed:seedValue, count:systemCount});
-					//GenerateCluster();
 				});
 				GenerateCluster();
 				

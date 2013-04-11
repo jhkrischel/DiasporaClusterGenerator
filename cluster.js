@@ -38,6 +38,9 @@ function StarSystem(die) {
     this.links = [];
 	this.x = 0;
 	this.y = 0;
+	this.name = "";
+	this.aspect1 = "";
+	this.aspect2 = "";
 }
 
 // Cluster //--------------------------------------------------------------------------------
@@ -76,6 +79,9 @@ Cluster.prototype.LoadFromJSON = function(text) {
 	for (index = 0; index < obj.systems.length; index++)
     {
 		this.systems[index] = new StarSystem();
+		this.systems[index].name = obj.systems[index].name;
+		this.systems[index].aspect1 = obj.systems[index].aspect1;
+		this.systems[index].aspect2 = obj.systems[index].aspect2;
 		this.systems[index].planet.technology = obj.systems[index].planet.technology;
 		this.systems[index].planet.environment = obj.systems[index].planet.environment;
 		this.systems[index].planet.resources = obj.systems[index].planet.resources;
@@ -357,7 +363,7 @@ Cluster.prototype.Draw = function (canvasId) {
 
 };
 
-// Ignore these properties when strinifying a Cluster to JSON
+// Ignore these properties when stringifying a Cluster to JSON
 function ClusterStringifyReplacer(key,value) {
 	if (key=="x") return undefined;
 	if (key=="y") return undefined;
