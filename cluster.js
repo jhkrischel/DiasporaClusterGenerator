@@ -222,6 +222,7 @@ Cluster.prototype.DrawLink = function(index1, index2, canvasId) {
 		system1 = this.systems[index1];
 		system2 = this.systems[index2];
 		$(canvasId).drawLine({
+			layer: true,
             strokeStyle: strokeStyle,
             strokeWidth: strokeWidth,
             x1: system1.x, y1: system1.y,
@@ -243,6 +244,7 @@ Cluster.prototype.DrawLink = function(index1, index2, canvasId) {
 		this.alternate = !this.alternate;
 
 		$(canvasId).drawBezier({
+			layer: true,
             strokeStyle: strokeStyle,
             strokeWidth: strokeWidth,
             x1: system1.x, y1: system1.y,
@@ -309,7 +311,15 @@ Cluster.prototype.Draw = function (canvasId) {
             strokeWidth: 2,
             x: x,
             y: y,
-            radius: SystemRadius
+            radius: SystemRadius,
+			layer: true,
+			data: {
+				index: index
+			},
+			click: function(layer) {
+				$("#systemBlock").children("div").hide();
+				$("#systemBlock").children("#"+layer.data.index).show("slow");
+			}
         });
 
         $(canvasId).drawText({
@@ -318,7 +328,15 @@ Cluster.prototype.Draw = function (canvasId) {
             x: x,
             y: y - 20,
             font: fontName,
-            text: 'T' + system.planet.FormatNumber(system.planet.technology)
+            text: 'T' + system.planet.FormatNumber(system.planet.technology),
+			layer: true,
+			data: {
+				index: index
+			},
+			click: function(layer) {
+				$("#systemBlock").children("div").hide();
+				$("#systemBlock").children("#"+layer.data.index).show("slow");
+			}
         });
 
         $(canvasId).drawText({
@@ -327,7 +345,15 @@ Cluster.prototype.Draw = function (canvasId) {
             x: x,
             y: y,
             font: fontName,
-            text: 'E' + system.planet.FormatNumber(system.planet.environment)
+            text: 'E' + system.planet.FormatNumber(system.planet.environment),
+			layer: true,
+			data: {
+				index: index
+			},
+			click: function(layer) {
+				$("#systemBlock").children("div").hide();
+				$("#systemBlock").children("#"+layer.data.index).show("slow");
+			}
         });
 
         $(canvasId).drawText({
@@ -336,7 +362,15 @@ Cluster.prototype.Draw = function (canvasId) {
             x: x,
             y: y + 20,
             font: fontName,
-            text: 'R' + system.planet.FormatNumber(system.planet.resources)
+            text: 'R' + system.planet.FormatNumber(system.planet.resources),
+			layer: true,
+			data: {
+				index: index
+			},
+			click: function(layer) {
+				$("#systemBlock").children("div").hide();
+				$("#systemBlock").children("#"+layer.data.index).show("slow");
+			}
         });
 
         x += SystemSpacing + (SystemRadius * 2);
@@ -352,6 +386,7 @@ Cluster.prototype.Draw = function (canvasId) {
 		text: cluster.seed
 	}).width;
 	$(canvasId).drawText({
+		layer: true,
 		fillStyle: "black",
 		strokeWidth: 1,
 		x: width-(textWidth+10),
