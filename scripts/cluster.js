@@ -265,6 +265,8 @@ Cluster.prototype.Draw = function (canvasId) {
     var cluster = this;
 	var system;
 
+	$(canvasId).clearCanvas();
+	
     $(canvasId).attr("width", width);
     $(canvasId).attr("height", height);
 
@@ -300,11 +302,14 @@ Cluster.prototype.Draw = function (canvasId) {
 	// draw system
 	x = SystemSpacing + SystemRadius;
 	y = height / 2; //(SystemSpacing * 6);
-	var fontName = "16pt Consolas, Courier, sans-serif";
+	var fontFamily = "Consolas, Courier, sans-serif";
+	var fontSize = "16pt";
 	var fontStrokeWidth = 1;
     this.systems.forEach(function (element, index, array) {
         system = element;
 
+		var systemName = "system"+index;
+		
         $(canvasId).drawArc({
 			fillStyle: "white",
             strokeStyle: "#000",
@@ -313,12 +318,13 @@ Cluster.prototype.Draw = function (canvasId) {
             y: y,
             radius: SystemRadius,
 			layer: true,
+			name: systemName,
 			data: {
 				index: index
 			},
+			groups: ["systems"],
 			click: function(layer) {
-				$("#systemBlock").children("div").hide();
-				$("#systemBlock").children("#"+layer.data.index).show("slow");
+				SelectSystem(layer);
 			}
         });
 
@@ -327,15 +333,15 @@ Cluster.prototype.Draw = function (canvasId) {
             strokeWidth: fontStrokeWidth,
             x: x,
             y: y - 20,
-            font: fontName,
+			fontSize: fontSize,
+			fontFamily: fontFamily,
             text: 'T' + system.planet.FormatNumber(system.planet.technology),
 			layer: true,
 			data: {
 				index: index
 			},
 			click: function(layer) {
-				$("#systemBlock").children("div").hide();
-				$("#systemBlock").children("#"+layer.data.index).show("slow");
+				SelectSystem(layer);
 			}
         });
 
@@ -344,15 +350,15 @@ Cluster.prototype.Draw = function (canvasId) {
             strokeWidth: fontStrokeWidth,
             x: x,
             y: y,
-            font: fontName,
+			fontSize: fontSize,
+			fontFamily: fontFamily,
             text: 'E' + system.planet.FormatNumber(system.planet.environment),
 			layer: true,
 			data: {
 				index: index
 			},
 			click: function(layer) {
-				$("#systemBlock").children("div").hide();
-				$("#systemBlock").children("#"+layer.data.index).show("slow");
+				SelectSystem(layer);
 			}
         });
 
@@ -361,15 +367,15 @@ Cluster.prototype.Draw = function (canvasId) {
             strokeWidth: fontStrokeWidth,
             x: x,
             y: y + 20,
-            font: fontName,
+			fontSize: fontSize,
+			fontFamily: fontFamily,
             text: 'R' + system.planet.FormatNumber(system.planet.resources),
 			layer: true,
 			data: {
 				index: index
 			},
 			click: function(layer) {
-				$("#systemBlock").children("div").hide();
-				$("#systemBlock").children("#"+layer.data.index).show("slow");
+				SelectSystem(layer);
 			}
         });
 
@@ -377,11 +383,13 @@ Cluster.prototype.Draw = function (canvasId) {
     });
 
 	// Draw seed value in upper right
-	fontName = "8pt Consolas, Courier, sans-serif";	
+	fontFamily = "Consolas, Courier, sans-serif";
+	fontSize = "8pt";
 	var textWidth = $(canvasId).measureText({
 		fillStyle: "black",
 		strokeWidth: 1,
-		font: fontName,
+		fontSize: fontSize,
+		fontFamily: fontFamily,
 		fromCenter: false,
 		text: cluster.seed
 	}).width;
@@ -391,12 +399,31 @@ Cluster.prototype.Draw = function (canvasId) {
 		strokeWidth: 1,
 		x: width-(textWidth+10),
 		y: 5,
-		font: fontName,
+		fontSize: fontSize,
+		fontFamily: fontFamily,
 		fromCenter: false,
 		text: cluster.seed
 	});
 
 };
+
+function SelectSystem(layer) {
+	var systems = $("#"+layer.canvas.id).getLayerGroup("systems");
+	systems.forEach(function (element, index, array) {
+		$("#"+layer.canvas.id).setLayer(element.name,	{
+			strokeStyle: "#000",
+			strokeWidth: 2
+		});
+	});			
+
+	$("#"+layer.canvas.id).setLayer("system"+layer.data.index,	{
+		strokeStyle: "blue",
+		strokeWidth: 4
+	}).drawLayers();
+	$("#instructions").hide();
+	$("#systemBlock").children("div").hide();
+	$("#systemBlock").children("#"+layer.data.index).show("slow");
+}
 
 // Ignore these properties when stringifying a Cluster to JSON
 function ClusterStringifyReplacer(key,value) {

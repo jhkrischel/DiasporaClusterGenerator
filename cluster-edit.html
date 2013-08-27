@@ -6,14 +6,14 @@
 		<title>Diaspora Cluster Editor</title>
 
 		<link href='http://fonts.googleapis.com/css?family=Aldrich' rel='stylesheet' type='text/css'>
-        <link href="./diaspora.css" rel="stylesheet"/>
+        <link href="./css/diaspora.css" rel="stylesheet"/>
 
-		<script type="text/javascript" src="./jquery-1.9.0.js"></script>
-		<script type="text/javascript" src="./jcanvas.js"></script>
-		<script type="text/javascript" src="./knockout-2.3.0.debug.js"></script>		
-		<script type="text/javascript" src="./seedrandom.js"></script>
-		<script type="text/javascript" src="./dice.js"></script>
-		<script type="text/javascript" src="./cluster.js"></script>
+		<script type="text/javascript" src="./scripts/jquery-1.9.0.js"></script>
+		<script type="text/javascript" src="./scripts/jcanvas.js"></script>
+		<script type="text/javascript" src="./scripts/knockout-2.3.0.js"></script>		
+		<script type="text/javascript" src="./scripts/seedrandom.js"></script>
+		<script type="text/javascript" src="./scripts/dice.js"></script>
+		<script type="text/javascript" src="./scripts/cluster.js"></script>
 	</head>
 	<body>
 		<h1>Diaspora Cluster Editor</h1>
@@ -21,6 +21,10 @@
 		<br />
 		<canvas id="clusterCanvas" width="500" height="250"></canvas>
 		<hr />
+		<div id="instructions">
+			<h2>Click a system to begin</h2>
+			Still a work in progress
+		</div>
 		<div id="systemBlock" data-bind="foreach: systems">
 			<div id="system" data-bind="attr: {id: $index }" >
 				<label for="systemName">System Name</label><input  data-bind="value: name" type="text" id="systemName" /><br />
@@ -67,6 +71,7 @@
 		<br />
 
 		<div id="clusterJSON"></div>
+		<hr />
 		<div id="koJSON"></div>
         <script type="text/javascript">		
 			$.urlParam = function(name){
@@ -103,32 +108,32 @@
 								
 			};
 			
-			ko.bindingHandlers.changed = {
-				init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-					// This will be called when the binding is first applied to an element
-					// Set up any initial state, event handlers, etc. here
-				},
-				update: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-					// This will be called once when the binding is first applied to an element,
-					// and again whenever the associated observable changes value.
-					// Update the DOM element based on the supplied values here.
-				}
-			};
+			var cluster = new Cluster();
 			
 			$(document).ready(function () {
 				//var jsonCluster = $.urlParam('json');
 				var jsonCluster = QueryString.json;
 				jsonCluster = decodeURIComponent(jsonCluster);
-				var cluster = new Cluster();
 				cluster.LoadFromJSON(jsonCluster);
 				cluster.Draw("#clusterCanvas");
-				$("#clusterJSON").html(jsonCluster);
+				//$("#clusterJSON").html(jsonCluster);
 				
 				var model = new ClusterEditModel(cluster.systems)
 				$("#koJSON").html(ko.toJSON(model));
 				ko.applyBindings(model);
 				
 				$("#systemBlock").children("div").hide();
+				
+				$( "select" ).change(function() {
+					cluster.Draw("#clusterCanvas");
+					$("#koJSON").html(ko.toJSON(model));
+				});
+
+				$( "input" ).change(function() {
+					cluster.Draw("#clusterCanvas");
+					$("#koJSON").html(ko.toJSON(model));
+				});
+				
             });
 			
         </script>
