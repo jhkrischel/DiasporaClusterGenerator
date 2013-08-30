@@ -46,6 +46,8 @@ function StarSystem(die) {
 // Cluster //--------------------------------------------------------------------------------
 function Cluster() {
 	this.systems = [];
+	this.selected = -1;
+	this.alternate = false;
 }
 
 Cluster.prototype.Generate = function(die, count) {
@@ -286,6 +288,7 @@ Cluster.prototype.Draw = function (canvasId) {
     });
 	
 	// draw links
+	cluster.alternate = false;
     this.systems.forEach(function (element, index, array) {
         system = element;
 
@@ -310,10 +313,20 @@ Cluster.prototype.Draw = function (canvasId) {
 
 		var systemName = "system"+index;
 		
+		var strokeStyle;
+		var strokeWidth;
+		if (cluster.selected==index){
+			strokeStyle = "Blue";
+			strokeWidth = 4;
+		} else {
+			strokeStyle = "#000";
+			strokeWidth = 2;
+		}
+		
         $(canvasId).drawArc({
 			fillStyle: "white",
-            strokeStyle: "#000",
-            strokeWidth: 2,
+            strokeStyle: strokeStyle,
+            strokeWidth: strokeWidth,
             x: x,
             y: y,
             radius: SystemRadius,
@@ -324,7 +337,7 @@ Cluster.prototype.Draw = function (canvasId) {
 			},
 			groups: ["systems"],
 			click: function(layer) {
-				SelectSystem(layer);
+				cluster.SelectSystem(layer);
 			}
         });
 
@@ -341,7 +354,7 @@ Cluster.prototype.Draw = function (canvasId) {
 				index: index
 			},
 			click: function(layer) {
-				SelectSystem(layer);
+				cluster.SelectSystem(layer);
 			}
         });
 
@@ -358,7 +371,7 @@ Cluster.prototype.Draw = function (canvasId) {
 				index: index
 			},
 			click: function(layer) {
-				SelectSystem(layer);
+				cluster.SelectSystem(layer);
 			}
         });
 
@@ -375,7 +388,7 @@ Cluster.prototype.Draw = function (canvasId) {
 				index: index
 			},
 			click: function(layer) {
-				SelectSystem(layer);
+				cluster.SelectSystem(layer);
 			}
         });
 
@@ -407,23 +420,14 @@ Cluster.prototype.Draw = function (canvasId) {
 
 };
 
-function SelectSystem(layer) {
-	var systems = $("#"+layer.canvas.id).getLayerGroup("systems");
-	systems.forEach(function (element, index, array) {
-		$("#"+layer.canvas.id).setLayer(element.name,	{
-			strokeStyle: "#000",
-			strokeWidth: 2
-		});
-	});			
+Cluster.prototype.SelectSystem = function(layer) {
+	this.selected = layer.data.index;
+	this.Draw("#"+layer.canvas.id);
 
-	$("#"+layer.canvas.id).setLayer("system"+layer.data.index,	{
-		strokeStyle: "blue",
-		strokeWidth: 4
-	}).drawLayers();
 	$("#instructions").hide();
 	$("#systemBlock").children("div").hide();
-	$("#systemBlock").children("#"+layer.data.index).show("slow");
-}
+	$("#systemBlock").children("#"+layer.data.index).show();
+};
 
 // Ignore these properties when stringifying a Cluster to JSON
 function ClusterStringifyReplacer(key,value) {

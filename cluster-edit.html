@@ -18,6 +18,8 @@
 	<body>
 		<h1>Diaspora Cluster Editor</h1>
 		
+		<button id="backButton" type="button">Back to Generator</button>
+		<hr />
 		<br />
 		<canvas id="clusterCanvas" width="500" height="250"></canvas>
 		<hr />
@@ -74,33 +76,13 @@
 		<hr />
 		<div id="koJSON"></div>
         <script type="text/javascript">		
-			$.urlParam = function(name){
-				var results = new RegExp('[\\?&amp;]' + name + '=([^&amp;#]*)').exec(window.location.href);
-				return results[1] || 0;
+			var json;
+			if(window.location.hash) {
+				json = window.location.hash.substring(1); //Puts hash in variable, and removes the # character
+			} else {
+				json = "";
 			}
 
-			var QueryString = function () {
-				// This function is anonymous, is executed immediately and 
-				// the return value is assigned to QueryString!
-				var query_string = {};
-				var query = window.location.search.substring(1);
-				var vars = query.split("&");
-				for (var i=0;i<vars.length;i++) {
-					var pair = vars[i].split("=");
-					// If first entry with this name
-					if (typeof query_string[pair[0]] === "undefined") {
-						query_string[pair[0]] = pair[1];
-						// If second entry with this name
-					} else if (typeof query_string[pair[0]] === "string") {
-						var arr = [ query_string[pair[0]], pair[1] ];
-						query_string[pair[0]] = arr;
-						// If third or later entry with this name
-					} else {
-						query_string[pair[0]].push(pair[1]);
-					}
-				} 
-				return query_string;
-			} ();
 			
 			var ClusterEditModel = function(systems) {
 				var self = this;
@@ -111,29 +93,34 @@
 			var cluster = new Cluster();
 			
 			$(document).ready(function () {
-				//var jsonCluster = $.urlParam('json');
-				var jsonCluster = QueryString.json;
-				jsonCluster = decodeURIComponent(jsonCluster);
-				cluster.LoadFromJSON(jsonCluster);
-				cluster.Draw("#clusterCanvas");
-				//$("#clusterJSON").html(jsonCluster);
+				var jsonCluster = json;
+				if (json != "") {
+					jsonCluster = decodeURIComponent(jsonCluster);
+					cluster.LoadFromJSON(jsonCluster);
+					cluster.Draw("#clusterCanvas");
 				
-				var model = new ClusterEditModel(cluster.systems)
-				$("#koJSON").html(ko.toJSON(model));
-				ko.applyBindings(model);
+					var model = new ClusterEditModel(cluster.systems)
+					$("#koJSON").html(ko.toJSON(model));
+					ko.applyBindings(model);
+				}
 				
 				$("#systemBlock").children("div").hide();
 				
 				$( "select" ).change(function() {
 					cluster.Draw("#clusterCanvas");
 					$("#koJSON").html(ko.toJSON(model));
+					window.location.hash = encodeURIComponent($("#koJSON").html());
 				});
 
 				$( "input" ).change(function() {
 					cluster.Draw("#clusterCanvas");
 					$("#koJSON").html(ko.toJSON(model));
+					window.location.hash = encodeURIComponent($("#koJSON").html());
 				});
 				
+				$("#backButton").click(function () {
+					window.location.href = "diaspora.html";
+                });
             });
 			
         </script>

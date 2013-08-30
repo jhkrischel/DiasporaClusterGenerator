@@ -65,7 +65,7 @@
                 $("#editButton").click(function () {
 					// get json, open edit page with it as a param
 					var jsonCluster = encodeURIComponent($("#clusterJSON").html());
-					window.location.href = "cluster-edit.html?json="+jsonCluster;
+					window.location.href = "cluster-edit.html#"+jsonCluster;
                 });
 
 				$("#systemCount").val(systemCount);
